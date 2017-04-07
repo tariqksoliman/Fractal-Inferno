@@ -89,44 +89,76 @@ var FractalInferno = function() {
                 return [ r * ( Math.pow( p0, 3 ) + Math.pow( p1, 3 ) ), r * ( Math.pow( p0, 3 ) - Math.pow( p1, 3 ) ) ];
             }
         }
-    ]
+    ];
 
-    function randomizeVaris() {
-        var cofMult = 1;
-        var cofSub = 0.5;
-        var weights = [];
+    var funcs = [];
 
-        var totalSum = 0;
-        var weightInc = 0.05;
-        //Make an array of weights that add up to 1;
-        for( var i = 0; i < varis.length; i++ ) {
-            weights.push( 0 );
+    function runFunc( fi, x, y ) {
+        var s;
+        var xnew = 0;
+        var ynew = 0;
+        for( var i = 0; i < funcs[fi].v.length; i++ ) {
+            s = varis[funcs[fi].v[i]].f( funcs[fi].c[0]*x + funcs[fi].c[1]*y + funcs[fi].c[2],
+                                        funcs[fi].c[3]*x + funcs[fi].c[4]*y + funcs[fi].c[5] );
+            xnew += ( s[0] * funcs[fi].w[i] );
+            ynew += ( s[1] * funcs[fi].w[i] );
         }
-        //Keep add weightInc randomly until the sum is one
-        while( totalSum < 1 ) {
-            weights[ Math.floor( Math.random() * varis.length ) ] += weightInc;
-            totalSum += weightInc;
-        }
-        //weights = [ 0, 0, 0, 0, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.2, 0.5 ].reverse();
-
-
-        //Fill in variable frac data
-        for( var i = 0; i < varis.length; i++ ) {
-            varis[i].col = [ Math.random(), Math.random(), Math.random() ];
-            varis[i].cofs = [  Math.random() * cofMult - cofSub,
-                            Math.random() * cofMult - cofSub,
-                            Math.random() * cofMult - cofSub,
-                            Math.random() * cofMult - cofSub,
-                            Math.random() * cofMult - cofSub,
-                            Math.random() * cofMult - cofSub ];
-            varis[i].w = weights[i];
-        }
-
-        return weights;
-
+        return [ xnew, ynew ];
     }
 
-    var weights = randomizeVaris();
+    function randomizeFuncs() {
+        var numOfFuncs = Math.max( Math.floor( Math.random() * 8 ), 3 );
+
+        for( var i = 0; i < numOfFuncs; i++ ) {
+            var v = []; //array of ascending varis indicies
+            var w = []; //array of non-negative nums summing to 1 with same length as v
+            var col = []; //rgb triplet each 0 to 1
+            var c = []; //array of 6 coefficients
+
+            //v
+            //Pick random varis indicies and add them to v if they aren't already there
+            var maxNumOfVarisPerFunc = Math.max( Math.floor( Math.random() * varis.length ), 2 );
+            for( var j = 0; j < maxNumOfVarisPerFunc; j++ ) {
+                var randomVarisI = Math.floor( Math.random() * varis.length ); 
+                if( v.indexOf( randomVarisI ) == -1 ) {
+                    v.push( randomVarisI );
+                }
+            }
+
+            //w
+            //Set all the weights to 0
+            var totalSum = 0;
+            var weightInc = 0.05;
+            for( var j = 0; j < v.length; j++ ) {
+                w.push( 0 );
+            }
+            //Keep randomly incrementing weights until their sum is 1
+            while( totalSum < 1 ) {
+                w[ Math.floor( Math.random() * v.length ) ] += weightInc;
+                totalSum += weightInc;
+            }
+
+            //col
+            col = [ Math.random(), Math.random(), Math.random() ];
+
+            //c
+            var cofMult = 4;
+            var cofSub = 2;
+            c = [
+                Math.random() * cofMult - cofSub,
+                Math.random() * cofMult - cofSub,
+                Math.random() * cofMult - cofSub,
+                Math.random() * cofMult - cofSub,
+                Math.random() * cofMult - cofSub,
+                Math.random() * cofMult - cofSub
+            ];
+
+            //Add the new func parameters
+            funcs.push( { v:v, w:w, col:col, c:c } );
+        }
+    }
+
+    randomizeFuncs();
 
     var canvas = document.getElementById( 'canvas' );
     var canvasWidth = canvas.width = window.innerWidth;
@@ -136,9 +168,24 @@ var FractalInferno = function() {
     ctx.imageSmoothingEnabled = false;
     var imgData = ctx.createImageData( canvasWidth, canvasHeight );
 
-    var steps = 100000000;
+    var steps = 10000000;
     var stepCount = 0;
     var frameStep = 25000;
+    
+    //Random function weight
+    var weights = [];
+    var totalSum = 0;
+    var weightInc = 0.5;
+    for( var i = 0; i < funcs.length; i++ ) {
+        weights.push( 0 );
+    }
+    //Keep randomly incrementing weights until their sum is 1
+    while( totalSum < 0.99 ) {
+        weights[ Math.floor( Math.random() * funcs.length ) ] += weightInc;
+        totalSum += weightInc;
+        weightInc /= 2;
+    }
+
     //Choose random point
     var p = [ 2 * Math.random() - 1, 2 * Math.random() - 1 ];
     var pS;
@@ -150,8 +197,8 @@ var FractalInferno = function() {
     var c = [ Math.random(), Math.random(), Math.random() ];
 
     //Choose a random final function
-    var final = Math.floor( Math.random() * varis.length );
-    var cfinal = Math.floor( Math.random() * varis.length );
+    var final = Math.floor( Math.random() * funcs.length );
+    var cfinal = Math.floor( Math.random() * funcs.length );
     //rotations
     var rot = Math.floor( Math.random() * 3 );
 
@@ -161,21 +208,15 @@ var FractalInferno = function() {
             w = weightedRand( weights );
 
             //random
-            p = varis[w].f( p[0], p[1] );
-            //p[0] = varis[w].cofs[0] * pS[0] + varis[w].cofs[1] * pS[1] + varis[w].cofs[2];
-            // p[1] = varis[w].cofs[3] * pS[0] + varis[w].cofs[4] * pS[1] + varis[w].cofs[5];
-
+            p = runFunc( w, p[0], p[1] );
             //final
-            pS = varis[final].f( p[0], p[1] );
-            p[0] = varis[w].cofs[0] * pS[0] + varis[w].cofs[1] * pS[1] + varis[w].cofs[2];
-            p[1] = varis[w].cofs[3] * pS[0] + varis[w].cofs[4] * pS[1] + varis[w].cofs[5];
-            //p = rotatePoint( p, Math.PI );
-
+            p = runFunc( final, p[0], p[1] );
             //Stretch to fit canvas
             pn = [ Math.floor( ( p[0] + 2 ) * ( canvasWidth / 4 ) ), Math.floor( ( p[1] + 2 ) * ( canvasHeight / 4 ) ) ];
             
             //Rotate for symmetry
             //Ugly - clean this up
+            
             if( rot == 1 ) {
                 if( i%2 == 0 )
                     pn = rotatePoint( pn, Math.PI );
@@ -186,15 +227,18 @@ var FractalInferno = function() {
                 else if( i%2 == 0 )
                     pn = rotatePoint( pn, 4 * Math.PI / 3 );
             }
+            
 
             //Update colors
-            c[0] = ( ( c[0] + varis[w].col[0] ) / 2 );
-            c[1] = ( ( c[1] + varis[w].col[1] ) / 2 );
-            c[2] = ( ( c[2] + varis[w].col[2] ) / 2 );
+            c[0] = ( ( c[0] + funcs[w].col[0] ) / 2 );
+            c[1] = ( ( c[1] + funcs[w].col[1] ) / 2 );
+            c[2] = ( ( c[2] + funcs[w].col[2] ) / 2 );
             //Colors final pass
-            c[0] = ( ( c[0] + varis[cfinal].col[0] ) / 2 );
-            c[1] = ( ( c[1] + varis[cfinal].col[1] ) / 2 );
-            c[2] = ( ( c[2] + varis[cfinal].col[2] ) / 2 );
+            /*
+            c[0] = ( ( c[0] + funcs[cfinal].col[0] ) / 2 );
+            c[1] = ( ( c[1] + funcs[cfinal].col[1] ) / 2 );
+            c[2] = ( ( c[2] + funcs[cfinal].col[2] ) / 2 );
+            */
             
             //Update pixels
             if( !firstPass || ( firstPass && i > 20 ) ) {
