@@ -1,17 +1,17 @@
 html, body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    background-color: #030303;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #030303;  
+  color: #E6E6E6;
+  font-family: monospace;
 }
 
 #renderingbar {
   position: fixed;
   top: 0;
   right: 0;
-  color: #E6E6E6;
-  font-family: monospace;
 }
 
 #canvas { 
@@ -19,4 +19,223 @@ html, body {
   width: 100vh; 
   display: block;
   margin: auto;
+}
+
+#functions {
+    width: 270px;
+    height: calc( 100vh - 20px - 32px - 32px );
+    position: fixed;
+    top: 20px;
+    right: 0px;
+    overflow-y: auto;
+}
+#functionsAdd {
+  border: 1px solid #999;
+  font-size: 22px;
+  text-align: center;
+  cursor: pointer;
+}
+.functionHeader {
+  border-top: 1px solid cyan;
+  border-bottom: 1px solid cyan;
+  font-size: 20px;
+  padding: 3px;
+}
+.functionCof {
+  border-bottom: 1px solid #CCC;
+  font-size: 16px;
+  padding: 3px;
+  margin-left: 20px;
+}
+.functionVaris {
+  border-bottom: 1px solid #CCC;
+  font-size: 16px;
+  padding: 3px;
+  margin-left: 20px;
+}
+.functionAddVaris {
+  border-left: 1px solid #999;
+  border-right: 1px solid #999;
+  font-size: 16px;
+  padding: 3px;
+  margin-left: 20px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.functionWeight {
+  width: 90px;
+  margin-left: 10px;
+}
+.functionColor {
+  width: 90px;
+  margin-left: 10px;
+}
+.functionCofs {
+  width: 170px;
+  margin-left: 10px;
+}
+
+.functionVarisNames {
+  width: 90px;
+  margin-left: 10px;
+}
+.functionVarisWeight {
+  width: 60px;
+  margin-left: 10px;
+}
+
+input[type=number],
+input[type=text] {
+  font-family: monospace;
+  font-size: 14px;
+  -webkit-appearance: none;
+  box-shadow: none;
+  border-radius: none;
+  border: none;
+  background-color: transparent;
+  text-align: center;
+  color: #E6E6E6;
+  border: 1px solid grey;
+}
+input[type=number]:focus,
+input[type=text]:focus {
+  outline: none;
+}
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button,
+input[type=text]::-webkit-inner-spin-button, 
+input[type=text]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
+select {
+  font-family: monospace;
+  font-size: 14px;
+  box-shadow: none;
+  border-radius: none;
+  border: none;
+  background-color: transparent;
+  text-align: center;
+  color: #E6E6E6;
+  border: 1px solid grey;
+}
+select option {
+  font-family: monospace;
+  font-size: 14px;
+  background-color: #030303;
+  color: #E6E6E6;
+  border: 1px solid grey;
+}
+select:focus {
+  outline: none;
+}
+
+.scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+ 
+.scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+ 
+.scrollbar::-webkit-scrollbar-thumb {
+  background: grey; 
+}
+
+#preIterate {
+  position: fixed;
+  bottom: 32px;
+  right: 0px;
+  padding: 4px 0 4px 0;
+}
+#preIterateFunction {
+  width: 83px;
+}
+#preIterateColor {
+  width: 83px;
+  margin-left: 11px;
+}
+#preIterateRot {
+  width: 83px;
+  margin-left: 11px;
+}
+
+#iterateButton {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 270px;
+  height: 24px;
+  text-align: center;
+  font-size: 20px;
+  padding: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background-color: transparent;
+}
+#iterateButton:hover {
+  background-color: #004d99;
+}
+
+
+#renderDiv {
+  position: fixed;
+  bottom: 32px;
+  left: 0px;
+  padding: 4px 0 4px 0;
+  width: 300px;
+}
+#renderDiv input {
+  margin-top: 4px;
+}
+#renderHueShift {
+  width: 90px;
+}
+#renderSatShift {
+  width: 90px;
+  margin-left: 12px;
+}
+#renderLightShift {
+  width: 90px;
+  margin-left: 12px;
+}
+#renderFreqThresh {
+  width: 142px;
+}
+#renderGamma {
+  width: 142px;
+  margin-left: 12px;
+}
+
+
+#renderButton {
+  width: 142px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  text-align: center;
+  font-size: 20px;
+  padding: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+#renderButton:hover {
+  background-color: #99004d;
+}
+
+#continueButton {
+  width: 142px;
+  position: fixed;
+  bottom: 0;
+  left: 150px;
+  text-align: center;
+  font-size: 20px;
+  padding: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+#continueButton:hover {
+  background-color: #4d9900;
 }
