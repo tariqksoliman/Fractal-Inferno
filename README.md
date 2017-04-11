@@ -1,6 +1,7 @@
 # Fractal-Inferno
-An attempt at the fractal flame algorithm as detailed in the [flam3 paper](http://flam3.com/flame_draves.pdf).  
+An attempt at the fractal flame algorithm as detailed in the [flam3 paper](http://flam3.com/flame_draves.pdf). 
 
-[Demo](https://tariqksoliman.github.io/Fractal-Inferno/) (Refresh to redraw)  
+[Demo](https://tariqksoliman.github.io/Fractal-Inferno/)
 
-Still needs quite a few things to look better.
+![Alt text](/resources/fractalinferno.png?raw=true)  
+-made with Fractal Inferno

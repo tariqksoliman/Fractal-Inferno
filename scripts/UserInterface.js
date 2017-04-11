@@ -1,4 +1,12 @@
 function UserInterface( fractalinferno ) {
+
+    $( '#helptoggle' ).on( 'click', function() {
+        $( '#help' ).stop(true, true)
+        .animate( {
+            height: 'toggle',
+            opacity: 'toggle'
+        }, 500 );
+    } );
     
     var functionsDiv = $( '<div/>' )
         .attr( 'id', 'functions' )
@@ -36,6 +44,17 @@ function UserInterface( fractalinferno ) {
                 .attr( 'type', 'text' )
                 .attr( 'placeholder', 'R,G,B' );
             functionHeaderDiv.append( functionColor );
+
+            var functionDelete = $( '<div/>' )
+                .attr( 'class', 'functionDelete' )
+                .html( '&times;' );
+            functionHeaderDiv.append( functionDelete );
+            functionDelete.on( 'click', function() {  
+                $(this).parent().parent().animate({
+                    height: '0',
+                    opacity: '0'
+                }, 600, function() { $(this).remove(); } );
+            } );
         
         var functionCofDiv = $( '<div/>' )
             .attr( 'class', 'functionCof' )
@@ -86,6 +105,17 @@ function UserInterface( fractalinferno ) {
                 .attr( 'type', 'number' )
                 .attr( 'placeholder', 'weight' );
             functionVarisDiv.append( functionVarisWeight );
+
+            var varisDelete = $( '<div/>' )
+                .attr( 'class', 'varisDelete' )
+                .html( '&times;' );
+            functionVarisDiv.append( varisDelete );
+            varisDelete.on( 'click', function() {  
+                $(this).parent().animate({
+                    height: '0',
+                    opacity: '0'
+                }, 600, function() { $(this).remove(); } );
+            } );
     }
 
 

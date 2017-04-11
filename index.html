@@ -6,7 +6,112 @@
         <script src='scripts/jquery-3.2.0.min.js'></script>
     </head>
     <body>
+        <div id='title'>Fractal Inferno</div>
         <div id='renderingbar'></div>
+        <div id='helptoggle'>Help</div>
+        <div id='help' class='scrollbar'>
+            <h2 style='margin-top:0;'>Basic</h2>
+            <p style='text-align: center;'>Click <b>NEW</b></p>
+            <p style='text-align: center;'>Wait</p>
+            <p style='text-align: center;'>Click <b>RENDER</b></p>
+            <h2>In-Depth</h2>
+            <p>A fractal is a mathematical set that exhibits a repeating pattern at every scale. There are several ways of drawing a fractal. 
+            One of them is by playing the Chaos Game. The Chaos Game is played as follows:
+                <p class='indented1'>
+                0. Create N functions
+                </p>
+                <p class='indented1'>
+                1. Select a random point (x,y)
+                </p>
+                <p class='indented1'>
+                2. Select one of your functions at random
+                </p>
+                <p class='indented1'>
+                3. Apply your point to that function and get a new point (x,y)
+                </p>
+                <p class='indented1'>
+                4. Plot your new point
+                </p>
+                <p class='indented1'>
+                5. Go to step 2
+                </p>
+            Fractal flames generate fractals in much the same way. Fractal Inferno is a Fractal Flame generator.</p>
+
+            <h3>Top Left Corner</h3>
+                <p class='indented1'>Points</p>
+                    <p class='indented2'>
+                    How may loops the Chaos Game has iterated through. The higher the value, the higher the detail in the final render. 
+                    1.0e+8 is fairly great detail.
+                    </p>
+
+            <h3>Top Right Corner</h3>
+                <p class='indented1'>+</p>
+                    <p class='indented2'>
+                    Add functions.
+                    </p>
+                <p class='indented1'>F</p>
+                    <p class='indented2'>
+                    weight: 0 to 1. The weights of all functions should add up to 1.
+                    </p>
+                    <p class='indented2'>
+                    R,G,B: Each value is 0 to 1 rgb value to color this function.
+                    </p>
+                <p class='indented1'>c</p>
+                    <p class='indented2'>
+                    a,b,c,d,e,f: a,b,c is the shear, rotation, and scale for the x-axis and d,e,f is for y. Values best between -3 and 3.
+                    </p>
+                <p class='indented1'>v</p>
+                    <p class='indented2'>
+                    A function and its weight. Weights should add up to 1 be don't have to.
+                    </p>
+
+            <h3>Bottom Right Corner</h3>
+                <p class='indented1'>final func</p>
+                    <p class='indented2'>
+                    Which of the above functions to always call at the end of each Chaos game loop. The first function is 0, second is 1 and
+                    so on. Leave blank for none.
+                    </p>
+                <p class='indented1'>final color</p>
+                    <p class='indented2'>
+                    Like final func but takes the functions color instead.
+                    </p>
+                <p class='indented1'>rotation</p>
+                    <p class='indented2'>
+                    How many times you want the fractal rotated about the center.
+                    </p>
+                <p class='indented1'>NEW</p>
+                    <p class='indented2'>
+                    Begin a new game. If no functions are defined, random ones are generated.
+                    </p>
+
+           <h3> Bottom Left Corner</h3>
+                <p class='indented1'>hue shift</p>
+                    <p class='indented2'>
+                    Value to add to the hue of each HSL color in the final image. Between -360 and 360.
+                    </p>
+                <p class='indented1'>sat shift</p>
+                    <p class='indented2'>
+                    Positive value to increase saturation and negative to decrease. Best at around 2.
+                    </p>
+                <p class='indented1'>light shift</p>
+                    <p class='indented2'>
+                    Like sat shift but for lightness. Best at around 1.
+                    </p>
+                <p class='indented1'>RENDER</p>
+                    <p class='indented2'>
+                    Take the currently plotted points, apply final changes and draw them.
+                    </p>
+                <p class='indented1'>CONTINUE</p>
+                    <p class='indented2'>
+                    Keep iterating the chaos game with the same functions after rendering.
+                    </p>
+            <hr>
+            <p style='text-align: center;'>
+                <a href='https://github.com/tariqksoliman/Fractal-Inferno' style='color: #E6E6E6;'>GitHub</a>
+            </p>
+            <p style='text-align: center;'>Tariq Soliman</p>
+        </div>
+
         <canvas id='canvas'></canvas>
     </body>
     <footer>
