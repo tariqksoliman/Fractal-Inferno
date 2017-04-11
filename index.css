@@ -1,3 +1,8 @@
+@font-face {
+    font-family: upheaval;
+    src: url(fonts/upheaval.ttf);
+}
+
 html, body {
   width: 100%;
   height: 100%;
@@ -5,13 +10,28 @@ html, body {
   padding: 0;
   background-color: #030303;  
   color: #E6E6E6;
-  font-family: monospace;
+  font-family: upheaval, monospace;
+}
+
+#title {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 288px;
+  text-align: center;
+  font-family: upheaval;
+  padding: 4px;
+  font-size: 30px;
+  border: 2px solid #999;
 }
 
 #renderingbar {
   position: fixed;
-  top: 0;
-  right: 0;
+  top: 41px;
+  left: 0;
+  width: 300px;
+  font-family: monospace;
+  text-align: center;
 }
 
 #canvas { 
@@ -22,66 +42,77 @@ html, body {
 }
 
 #functions {
-    width: 270px;
-    height: calc( 100vh - 20px - 32px - 32px );
+    width: 300px;
+    height: calc( 100vh - 32px - 32px );
     position: fixed;
-    top: 20px;
+    top: 0px;
     right: 0px;
     overflow-y: auto;
+    overflow-x: hidden;
 }
 #functionsAdd {
   border: 1px solid #999;
   font-size: 22px;
   text-align: center;
   cursor: pointer;
+  font-family: monospace;
 }
 .functionHeader {
-  border-top: 1px solid cyan;
-  border-bottom: 1px solid cyan;
+  border-top: 3px solid cyan;
+  border-left: 1px solid cyan;
   font-size: 20px;
-  padding: 3px;
+  padding: 3px 3px 3px 10px;
+}
+.functionDelete, .varisDelete {
+  font-family: monospace;
+  font-size: 20px;
+  display: inline;
+  margin-left: 6px;
+  padding-left: 8px;
+  padding-right: 8px;
+  cursor: pointer;
 }
 .functionCof {
-  border-bottom: 1px solid #CCC;
   font-size: 16px;
   padding: 3px;
-  margin-left: 20px;
+  margin-left: 30px;
 }
 .functionVaris {
-  border-bottom: 1px solid #CCC;
   font-size: 16px;
   padding: 3px;
-  margin-left: 20px;
+  margin-left: 30px;
 }
 .functionAddVaris {
-  border-left: 1px solid #999;
-  border-right: 1px solid #999;
+  border-top: 1px solid #777;
+  border-left: 1px solid #777;
+  border-right: 1px solid #777;
   font-size: 16px;
   padding: 3px;
-  margin-left: 20px;
+  margin-left: 30px;
   text-align: center;
   cursor: pointer;
+  font-family: monospace;
 }
 
 .functionWeight {
-  width: 90px;
+  width: 110px;
   margin-left: 10px;
 }
 .functionColor {
-  width: 90px;
+  width: 110px;
   margin-left: 10px;
 }
 .functionCofs {
-  width: 170px;
+  width: 212px;
   margin-left: 10px;
 }
 
 .functionVarisNames {
-  width: 90px;
+  width: 120px;
   margin-left: 10px;
 }
 .functionVarisWeight {
-  width: 60px;
+  width: 82px;
   margin-left: 10px;
 }
 
@@ -141,7 +172,7 @@ select:focus {
 }
  
 .scrollbar::-webkit-scrollbar-thumb {
-  background: grey; 
+  background: cyan; 
 }
 
 #preIterate {
@@ -151,22 +182,22 @@ select:focus {
   padding: 4px 0 4px 0;
 }
 #preIterateFunction {
-  width: 83px;
+  width: 92px;
 }
 #preIterateColor {
-  width: 83px;
-  margin-left: 11px;
+  width: 92px;
+  margin-left: 9px;
 }
 #preIterateRot {
-  width: 83px;
-  margin-left: 11px;
+  width: 92px;
+  margin-left: 9px;
 }
 
 #iterateButton {
   position: fixed;
   bottom: 0;
   right: 0;
-  width: 270px;
+  width: 292px;
   height: 24px;
   text-align: center;
   font-size: 20px;
@@ -176,7 +207,7 @@ select:focus {
   background-color: transparent;
 }
 #iterateButton:hover {
-  background-color: #004d99;
+  background-color: #666;
 }
 
 
@@ -212,6 +243,7 @@ select:focus {
 
 #renderButton {
   width: 142px;
+  height: 24px;
   position: fixed;
   bottom: 0;
   left: 0;
@@ -222,11 +254,12 @@ select:focus {
   transition: all 0.2s;
 }
 #renderButton:hover {
-  background-color: #99004d;
+  background-color: #666;
 }
 
 #continueButton {
   width: 142px;
+  height: 24px;
   position: fixed;
   bottom: 0;
   left: 150px;
@@ -237,5 +270,5 @@ select:focus {
   transition: all 0.2s;
 }
 #continueButton:hover {
-  background-color: #4d9900;
+  background-color: #666;
 }

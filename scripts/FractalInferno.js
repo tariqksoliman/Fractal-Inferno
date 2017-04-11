@@ -415,6 +415,8 @@ var FractalInferno = function() {
     }
 
     function render( params ) {
+        if( !imgData ) return;
+
         var freqThreshold = params.freqThreshold || 10;
         var gamma = params.gamma || 2.2;
         var hueShift = params.hueShift || 0;
@@ -438,12 +440,9 @@ var FractalInferno = function() {
                 imgData.data[ (y * canvasWidth * 4) + (x * 4) + 2 ] = avgCol[2] * Math.pow( alpha, 1/gamma );
                 imgData.data[ (y * canvasWidth * 4) + (x * 4) + 3 ] = alpha * 255;
             }
-            renderBar.innerText = 'Rendering ' + Math.round( x / canvasWidth * 100 ) + '%';
         }
 
         ctx.putImageData( imgData, 0, 0 );
-        
-        renderBar.innerText = 'Done! Refresh page to generate another.';
     }
 
     function findMaxFreq() {
