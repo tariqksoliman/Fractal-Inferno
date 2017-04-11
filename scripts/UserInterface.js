@@ -1,4 +1,12 @@
 function UserInterface( fractalinferno ) {
+
+    $( '#helptoggle' ).on( 'click', function() {
+        $( '#help' ).stop(true, true)
+        .animate( {
+            height: 'toggle',
+            opacity: 'toggle'
+        }, 500 );
+    } );
     
     var functionsDiv = $( '<div/>' )
         .attr( 'id', 'functions' )

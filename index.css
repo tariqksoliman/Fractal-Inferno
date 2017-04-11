@@ -34,6 +34,34 @@ html, body {
   text-align: center;
 }
 
+#helptoggle {
+  position: fixed;
+  top: 55px;
+  left: 0px;
+  width: 300px;
+  font-size: 20px;
+  cursor: pointer;
+  text-align: right;
+}
+#help {
+  display: none;
+  position: fixed;
+  top: 80px;
+  left: 0px;
+  width: 300px;
+  height: calc( 100vh - 80px - 90px );
+  overflow-x: hidden;
+  overflow-y: auto;
+  font-family: monospace;
+  text-align: justify;
+}
+.indented1 {
+  margin-left: 20px;
+}
+.indented2 {
+  margin-left: 40px;
+}
+
 #canvas { 
   height: 100vh; 
   width: 100vh; 
@@ -164,7 +192,7 @@ select:focus {
 }
 
 .scrollbar::-webkit-scrollbar {
-  width: 5px;
+  width: 0px;
 }
  
 .scrollbar::-webkit-scrollbar-track {
