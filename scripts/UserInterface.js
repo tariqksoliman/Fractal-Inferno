@@ -7,11 +7,55 @@ function UserInterface( fractalinferno ) {
             opacity: 'toggle'
         }, 500 );
     } );
+
+
+    var randomDiv = $( '<div/>' )
+    .attr( 'id', 'randomDiv' )
+    .attr( 'class', 'active' )
+    .text( 'Random' );
+    $( 'body' ).append( randomDiv );
+
+    var customDiv = $( '<div/>' )
+    .attr( 'id', 'customDiv' )
+    .text( 'Custom' );
+    $( 'body' ).append( customDiv );
+
+    var rfunctionsDiv = $( '<div/>' )
+        .attr( 'id', 'rfunctionsDiv' )
+        .attr( 'class', 'scrollbar' );
+    $( 'body' ).append( rfunctionsDiv );
+
+    for( var i = 0; i < fractalinferno.varisNames.length; i++ ) {
+        var rfunction = $( '<div/>' )
+        .attr( 'class', 'rfunction' )
+        .text( fractalinferno.varisNames[i] );
+        rfunctionsDiv.append( rfunction );
+
+        rfunction.on( 'click', function() {
+            $(this).toggleClass( 'active' );
+        } );
+    }
     
     var functionsDiv = $( '<div/>' )
         .attr( 'id', 'functions' )
         .attr( 'class', 'scrollbar' );
     $( 'body' ).append( functionsDiv );
+
+    randomDiv.on( 'click', function() {
+        $(this).addClass( 'active' );
+        customDiv.removeClass( 'active' );
+        functionsDiv.hide();
+        preIterateDiv.hide();
+        rfunctionsDiv.show();
+    } );
+
+    customDiv.on( 'click', function() {
+        $(this).addClass( 'active' );
+        randomDiv.removeClass( 'active' );
+        rfunctionsDiv.hide();
+        functionsDiv.show();
+        preIterateDiv.show();
+    } );
 
     var functionsAddDiv = $( '<div/>' )
         .attr( 'id', 'functionsAdd' )
@@ -121,32 +165,52 @@ function UserInterface( fractalinferno ) {
 
     function getFractalJSON() {
         var fractalJSON = [];
-        $( '#functions .function' ).each( function() {
-            var functionWeight = parseFloat( $(this).find( '.functionWeight' ).val() );
-            var functionColor = $(this).find( '.functionColor' ).val().split( ',' ).map(Number);
-            var functionsCofs = $(this).find( '.functionCofs' ).val().split( ',' ).map(Number);
-            var functionVarisNames = [];
-            var functionVarisWeights = [];
-            $(this).find( '.functionVaris' ).each( function(){
-                functionVarisNames.push( $(this).find( '.functionVarisNames :selected' ).val() );
-                functionVarisWeights.push( parseFloat( $(this).find( '.functionVarisWeight' ).val() ) );
+        //Random
+        if( $( '#randomDiv' ).hasClass( 'active' ) ) {
+            fractalJSON.push( 'random' );
+            $( '#rfunctionsDiv .rfunction' ).each( function() {
+                if( $(this).hasClass( 'active' ) ) {
+                    fractalJSON.push( $(this).text() );
+                }
             } );
-            if( !isNaN( functionWeight ) ) {
-                fractalJSON.push( {
-                    weight: functionWeight,
-                    col: functionColor,
-                    c: functionsCofs,
-                    v: functionVarisNames,
-                    w: functionVarisWeights
+        }
+        //Custom
+        else {
+            fractalJSON.push( 'custom' );
+            $( '#functions .function' ).each( function() {
+                var functionWeight = parseFloat( $(this).find( '.functionWeight' ).val() );
+                var functionColor = $(this).find( '.functionColor' ).val().split( ',' ).map(Number);
+                var functionsCofs = $(this).find( '.functionCofs' ).val().split( ',' ).map(Number);
+                var functionVarisNames = [];
+                var functionVarisWeights = [];
+                $(this).find( '.functionVaris' ).each( function(){
+                    functionVarisNames.push( $(this).find( '.functionVarisNames :selected' ).val() );
+                    functionVarisWeights.push( parseFloat( $(this).find( '.functionVarisWeight' ).val() ) );
                 } );
-            }
-        } );
+                if( !isNaN( functionWeight ) ) {
+                    fractalJSON.push( {
+                        weight: functionWeight,
+                        col: functionColor,
+                        c: functionsCofs,
+                        v: functionVarisNames,
+                        w: functionVarisWeights
+                    } );
+                }
+            } );
+        }
         return fractalJSON;
     }
     function getFractalParams() {
         var final = parseInt( $( '#preIterateFunction' ).val() ) || -1;
         var cfinal = parseInt( $( '#preIterateColor' ).val() ) || -1;
-        var rot = parseFloat( $( '#preIterateRot' ).val() ) || 0;
+        var rot = parseFloat( $( '#preIterateRot' ).val() ) || 1;
+        if( $( '#randomDiv' ).hasClass( 'active' ) ) {
+            return {
+                final: -1,
+                cfinal: -1,
+                rot: rot
+            }
+        }
         return {
             final: final,
             cfinal: cfinal,
@@ -171,11 +235,11 @@ function UserInterface( fractalinferno ) {
             .attr( 'placeholder', 'final color' );
         preIterateDiv.append( preIterateColor );
 
-        var preIterateRot = $( '<input/>' )
-            .attr( 'id', 'preIterateRot' )
-            .attr( 'type', 'number' )
-            .attr( 'placeholder', 'rotation' );
-        preIterateDiv.append( preIterateRot );
+    var preIterateRot = $( '<input/>' )
+        .attr( 'id', 'preIterateRot' )
+        .attr( 'type', 'number' )
+        .attr( 'placeholder', 'rotation' );
+    $( 'body' ).append( preIterateRot );
 
 
     var iterateButton = $( '<div/>' )
