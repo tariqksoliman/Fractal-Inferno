@@ -3,7 +3,8 @@ var FractalInferno = function() {
     var fractalinferno = {
         varisNames: [ 'Linear', 'Sinusoidal', 'Spherical', 'Swirl', 'Horseshoe', 'Polar',
                      'Hankerchief', 'Heart', 'Disc', 'Spiral', 'Hyperbolic', 'Diamond', 'Ex',
-                     'Julia', 'Bent', 'Fisheye' ],
+                     'Julia', 'Bent', 'Waves', 'Fisheye', 'Popcorn', 'Power', 'Rings', 'Fan',
+                     'Eyefish', 'Bubble', 'Cylinder', 'Tangent', 'Cross', 'Noise', 'Blur', 'Square' ],
         makeFuncs: makeFuncs,
         makeParams: makeParams,
         begin: begin,
@@ -11,6 +12,10 @@ var FractalInferno = function() {
         stop: stop,
         render: render
     };
+
+    //current function i
+    //for dependent varis funcs
+    var cfi = 0;
     
     var varis = [
         {   
@@ -52,7 +57,7 @@ var FractalInferno = function() {
             name: 'Polar',
             f: function( x, y ) {
                 var r = Math.sqrt( Math.pow( x, 2 ) + Math.pow( y, 2 ) );
-                var th = Math.atan2( x, y );
+                var th = Math.atan2( y, x );
                 return [ th / Math.PI, r - 1 ];
             }
         },
@@ -60,7 +65,7 @@ var FractalInferno = function() {
             name: 'Hankerchief',
             f: function( x, y ) {
                 var r = Math.sqrt( Math.pow( x, 2 ) + Math.pow( y, 2 ) );
-                var th = Math.atan2( x, y );
+                var th = Math.atan2( y, x );
                 return [ r * Math.sin( th + r ), r * Math.cos( th - r ) ];
             }
         },
@@ -68,7 +73,7 @@ var FractalInferno = function() {
             name: 'Heart',
             f: function( x, y ) {
                 var r = Math.sqrt( Math.pow( x, 2 ) + Math.pow( y, 2 ) );
-                var th = Math.atan2( x, y );
+                var th = Math.atan2( y, x );
                 return [ r * Math.sin( th * r ), r * -Math.cos( th * r ) ];
             }
         },
@@ -76,7 +81,7 @@ var FractalInferno = function() {
             name: 'Disc',
             f: function( x, y ) {
                 var r = Math.sqrt( Math.pow( x, 2 ) + Math.pow( y, 2 ) );
-                var th = Math.atan2( x, y );
+                var th = Math.atan2( y, x );
                 return [ ( th / Math.PI ) * Math.sin( Math.PI * r ),  ( th / Math.PI ) * Math.cos( Math.PI * r ) ];
             }
         },
@@ -84,7 +89,7 @@ var FractalInferno = function() {
             name: 'Spiral',
             f: function( x, y ) {
                 var r = Math.sqrt( Math.pow( x, 2 ) + Math.pow( y, 2 ) );
-                var th = Math.atan2( x, y );
+                var th = Math.atan2( y, x );
                 return [ ( 1 / r ) * ( Math.cos(th) + Math.sin(r) ), ( 1 / r ) * ( Math.sin(th) - Math.cos(r) ) ];
             }
         },
@@ -92,7 +97,7 @@ var FractalInferno = function() {
             name: 'Hyperbolic',
             f: function( x, y ) {
                 var r = Math.sqrt( Math.pow( x, 2 ) + Math.pow( y, 2 ) );
-                var th = Math.atan2( x, y );
+                var th = Math.atan2( y, x );
                 return [ Math.sin(th) / r, r * Math.cos(th) ];
             }
         },
@@ -100,7 +105,7 @@ var FractalInferno = function() {
             name: 'Diamond',
             f: function( x, y ) {
                 var r = Math.sqrt( Math.pow( x, 2 ) + Math.pow( y, 2 ) );
-                var th = Math.atan2( x, y );
+                var th = Math.atan2( y, x );
                 return [ Math.sin(th) * Math.cos(r), Math.cos(th) * Math.sin(r) ];
             }
         },
@@ -108,7 +113,7 @@ var FractalInferno = function() {
             name: 'Ex',
             f: function( x, y ) {
                 var r = Math.sqrt( Math.pow( x, 2 ) + Math.pow( y, 2 ) );
-                var th = Math.atan2( x, y );
+                var th = Math.atan2( y, x );
                 var p0 = Math.sin( th + r );
                 var p1 = Math.cos( th - r );
                 return [ r * ( Math.pow( p0, 3 ) + Math.pow( p1, 3 ) ), r * ( Math.pow( p0, 3 ) - Math.pow( p1, 3 ) ) ];
@@ -117,10 +122,10 @@ var FractalInferno = function() {
         {   
             name: 'Julia',
             f: function( x, y ) {
-                var r = Math.sqrt( Math.pow( x, 2 ) + Math.pow( y, 2 ) );
-                var th = Math.atan2( x, y );
-                var om = 0;
-                return [ Math.sqrt(r) * Math.cos( th / 2 + om ), Math.sqrt(r) * Math.sin( th / 2 + om ) ];
+                var rs = Math.sqrt( Math.sqrt( Math.pow( x, 2 ) + Math.pow( y, 2 ) ) );
+                var th = Math.atan2( y, x );
+                var om = funcs[cfi].c[0];
+                return [ rs * Math.cos( th / 2 + om ), rs * Math.sin( th / 2 + om ) ];
             }
         },
         {   
@@ -131,23 +136,118 @@ var FractalInferno = function() {
                 else if( x < 0 && y >= 0 )
                     return [ 2 * x, y ];
                 else if( x >= 0 && y < 0 )
-                    return [ x, y * 0.5 ];
+                    return [ x, y / 2 ];
                 else
-                    return [ 2 * x, y * 0.5 ];
+                    return [ 2 * x, y /2 ];
             }
         },
-        /*
-        {   //Waves
+        {
+            name: 'Waves',
             f: function( x, y ) {
-
+                return [ x + ( funcs[cfi].c[1] * Math.sin( y / Math.pow( funcs[cfi].c[2], 2 ) ) ),
+                         y + ( funcs[cfi].c[4] * Math.sin( x / Math.pow( funcs[cfi].c[5], 2 ) ) ) ];
             }
         },
-        */
         {   
             name: 'Fisheye',
             f: function( x, y ) {
+                var re = 2 / ( Math.sqrt( Math.pow( x, 2 ) + Math.pow( y, 2 ) ) + 1 );
+                return [ re * y, re * x ];
+            }
+        },
+        {   
+            name: 'Popcorn',
+            f: function( x, y ) {
+                return [ x + ( funcs[cfi].c[2] * Math.sin( Math.tan( 3 * y ) ) ),
+                         y + ( funcs[cfi].c[5] * Math.sin( Math.tan( 3 * x ) ) ) ];
+            }
+        },
+        {   
+            name: 'Power',
+            f: function( x, y ) {
+                var th = Math.atan2( y, x );
+                var rsth = Math.pow( Math.sqrt( Math.pow( x, 2 ) + Math.pow( y, 2 ) ), Math.sin(th) );
+                return [ rsth * Math.cos(th), rsth * Math.sin(th) ];
+            }
+        },
+        {   
+            name: 'Rings',
+            f: function( x, y ) {
                 var r = Math.sqrt( Math.pow( x, 2 ) + Math.pow( y, 2 ) );
-                return [ ( 2 * y ) / ( r + 1 ), ( 2 * x ) / ( r + 1 ) ];
+                var th = Math.atan2( y, x );
+                var re = modn( ( r + Math.pow( funcs[cfi].c[2], 2 ) ), ( 2 * Math.pow( funcs[cfi].c[2], 2 ) ) ) - Math.pow( funcs[cfi].c[2], 2 ) + ( r * ( 1 - Math.pow( funcs[cfi].c[2], 2 ) ) );
+                return [ re * Math.cos(th), re * Math.sin(th) ];
+            }
+        },
+        {   
+            name: 'Fan',
+            f: function( x, y ) {
+                var r = Math.sqrt( Math.pow( x, 2 ) + Math.pow( y, 2 ) );
+                var th = Math.atan2( y, x );
+                var t = Math.PI * Math.pow( funcs[cfi].c[2], 2 );
+                if( modn( ( th + funcs[cfi].c[5] ), t ) > ( t / 2 ) ) {
+                    return [ r * Math.cos( th - ( t / 2 ) ), r * Math.sin( th - ( t / 2 ) ) ];
+                }
+                else {
+                    return [ r * Math.cos( th + ( t / 2 ) ), r * Math.sin( th + ( t / 2 ) ) ];
+                }
+            }
+        },
+        {   
+            name: 'Eyefish',
+            f: function( x, y ) {
+                var re = 2 / ( Math.sqrt( Math.pow( x, 2 ) + Math.pow( y, 2 ) ) + 1 );
+                return [ re * x, re * y ];
+            }
+        },
+        {   
+            name: 'Bubble',
+            f: function( x, y ) {
+                var re = 4 / ( Math.pow( Math.sqrt( Math.pow( x, 2 ) + Math.pow( y, 2 ) ), 2 ) + 4 );
+                return [ re * x, re * y ];
+            }
+        },
+        {   
+            name: 'Cylinder',
+            f: function( x, y ) {
+                return [ Math.sin(x), y ];
+            }
+        },
+        {   
+            name: 'Tangent',
+            f: function( x, y ) {
+                return [ Math.sin(x) / Math.cos(y), Math.tan(y) ];
+            }
+        },
+        {   
+            name: 'Cross',
+            f: function( x, y ) {
+                var s = Math.sqrt( 1 / Math.pow( Math.pow( x, 2 ) - Math.pow( y, 2 ), 2 ) );
+                return [ s * x, s * y ];
+            }
+        },
+        {   
+            name: 'Noise',
+            f: function( x, y ) {
+                var p1 = Math.random();
+                var p2 = Math.random();
+                return [ p1 * x * Math.cos( 2 * Math.PI * p2 ), p1 * y * Math.sin( 2 * Math.PI * p2 ) ];
+            }
+        },
+        {   
+            name: 'Blur',
+            f: function( x, y ) {
+                var p1 = Math.random();
+                var p2 = Math.random();
+                return [ p1 * Math.cos( 2 * Math.PI * p2 ), p1 * Math.sin( 2 * Math.PI * p2 ) ];
+            }
+        },
+        {
+            name: 'Square',
+            f: function( x, y ) {
+                var p1 = Math.random();
+                var p2 = Math.random();
+                return [ p1 - 0.5, p2 - 0.5 ];
             }
         }
     ];
@@ -159,6 +259,9 @@ var FractalInferno = function() {
         var s;
         var xnew = 0;
         var ynew = 0;
+
+        cfi = fi;
+        
         for( var i = 0; i < funcs[fi].v.length; i++ ) {
             s = varis[funcs[fi].v[i]].f( funcs[fi].c[0]*x + funcs[fi].c[1]*y + funcs[fi].c[2],
                                         funcs[fi].c[3]*x + funcs[fi].c[4]*y + funcs[fi].c[5] );
@@ -171,7 +274,8 @@ var FractalInferno = function() {
     function makeFuncs( funcsJSON ) {
         funcs = [];
         weights = [];
-        if( funcsJSON && funcsJSON.length > 0 ) {
+        if( funcsJSON && funcsJSON[0] && funcsJSON[0] == 'custom' ) {
+            funcsJSON.shift(); //remove first element
             for( var i = 0; i < funcsJSON.length; i++ ) {
                 for( var j = 0; j < funcsJSON[i].v.length; j++ ) {
                     for( var k = 0; k < varis.length; k++ ) {
@@ -185,7 +289,9 @@ var FractalInferno = function() {
             funcs = funcsJSON;
         }
         else { //Randomize
-            var numOfFuncs = Math.max( Math.floor( Math.random() * 20 ), 4 );
+            funcsJSON.shift(); //remove first element
+
+            var numOfFuncs = Math.max( Math.floor( Math.random() * 17 ), 3 );
 
             for( var i = 0; i < numOfFuncs; i++ ) {
                 var v = []; //array of ascending varis indicies
@@ -195,12 +301,17 @@ var FractalInferno = function() {
 
                 //v
                 //Pick random varis indicies and add them to v if they aren't already there
-                var maxNumOfVarisPerFunc = Math.round( Math.random() * 5 ) + 1;
+                var maxNumOfVarisPerFunc = Math.round( Math.random() * 4 ) + 3;
                 for( var j = 0; j < maxNumOfVarisPerFunc; j++ ) {
-                    var randomVarisI = Math.floor( Math.random() * varis.length ); 
-                    if( v.indexOf( randomVarisI ) == -1 ) {
-                        v.push( randomVarisI );
-                    }
+                    var varisName = funcsJSON[ Math.floor( Math.random() * funcsJSON.length ) ]; 
+                    for( var k = 0; k < varis.length; k++ ) {
+                        if( varis[k].name == varisName ) {
+                            if( v.indexOf( k ) == -1 ) {
+                                v.push( k );
+                            }
+                        }
+                    } 
+                    
                 }
 
                 //w
@@ -220,8 +331,8 @@ var FractalInferno = function() {
                 col = [ Math.random(), Math.random(), Math.random() ];
 
                 //c
-                var cofMult = 4;
-                var cofSub = 2;
+                var cofMult = 2 * Math.PI;
+                var cofSub = Math.PI;
                 for( var j = 0; j < 6; j++ ) {
                     var cof = Math.random() * cofMult - cofSub;
                     c.push( cof );
@@ -254,18 +365,9 @@ var FractalInferno = function() {
     function makeParams( params ) {
         //-1 for none
         //1 for no rot
-        if( params ) {
-            final = params.final || -1;
-            cfinal = params.cfinal || -1;
-            rot = params.rot || 1;
-        }
-        else { //random
-            //Choose a random final function
-            final = Math.floor( Math.random() * ( funcs.length + 1 ) ) - 1;
-            cfinal = Math.floor( Math.random() * ( funcs.length + 1 ) ) - 1;
-            //rotations
-            rot = Math.floor( Math.random() * 20 ) + 1;
-        }
+        final = params.final || Math.floor( Math.random() * ( funcs.length + 1 ) ) - 1;
+        cfinal = params.cfinal || Math.floor( Math.random() * ( funcs.length + 1 ) ) - 1;
+        rot = params.rot || Math.floor( Math.random() * 20 ) + 1;
     }
 
 
@@ -494,6 +596,9 @@ var FractalInferno = function() {
         var ynew = p[0] * Math.sin( angle ) + p[1] * Math.cos( angle );
 
         return [ Math.round( xnew + cx ), Math.round( ynew + cy ) ];
+    }
+    function modn( n, m ) {
+        return ( (n % m) + m ) % m;
     }
 
     //Vibrancy

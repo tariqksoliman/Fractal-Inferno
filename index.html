@@ -41,10 +41,15 @@
                 <p class='indented1'>Points</p>
                     <p class='indented2'>
                     How may loops the Chaos Game has iterated through. The higher the value, the higher the detail in the final render. 
-                    1.0e+8 is fairly great detail.
+                    Over 1.0e+8 points usually yields a fairly high level of detail.
                     </p>
 
             <h3>Top Right Corner</h3>
+                <p>Random</p>
+                    <p class='indented1'>
+                    Choose a set of functions to randomly generate a fractal from.
+                    </p>
+                <p>Custom</p>
                 <p class='indented1'>+</p>
                     <p class='indented2'>
                     Add functions.
@@ -96,6 +101,15 @@
                 <p class='indented1'>light shift</p>
                     <p class='indented2'>
                     Like sat shift but for lightness. Best at around 1.
+                    </p>
+                <p class='indented1'>freq thresh</p>
+                    <p class='indented2'>
+                    Moves the alpha threshold. At 1, only the highest frequency point is fully opaque. 
+                    At 2, all points higher than half the max frequency are opaque. Default is 10.
+                    </p>
+                <p class='indented1'>gamma</p>
+                    <p class='indented2'>
+                    Roughly a non-linear lightness. Default is 2.2.
                     </p>
                 <p class='indented1'>RENDER</p>
                     <p class='indented2'>

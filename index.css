@@ -8,7 +8,7 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  background-color: #030303;  
+  background-color: #000;  
   color: #E6E6E6;
   font-family: upheaval, monospace;
 }
@@ -69,14 +69,69 @@ html, body {
   margin: auto;
 }
 
+#randomDiv {
+  position: fixed;
+  top: 0;
+  right: 150px;
+  text-align: center;
+  font-size: 20px;
+  width: 142px;
+  height: 24px;
+  padding: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+#randomDiv.active {
+  background-color: #666;
+}
+#customDiv {
+  position: fixed;
+  top: 0;
+  right: 0;
+  text-align: center;
+  font-size: 20px;
+  width: 142px;
+  height: 24px;
+  padding: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+#customDiv.active {
+  background-color: #666;
+}
+
+#rfunctionsDiv {
+  font-family: monospace;
+  font-size: 16px;
+  position: fixed;
+  right: 0;
+  top: 32px;
+  width: 300px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: calc( 100vh - 62px - 32px );
+  text-align: center;
+}
+
+.rfunction {
+  padding: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.rfunction.active {
+  background-color: #444;
+}
+
+
 #functions {
     width: 300px;
     height: calc( 100vh - 32px - 32px );
     position: fixed;
-    top: 0px;
+    top: 30px;
     right: 0px;
     overflow-y: auto;
     overflow-x: hidden;
+    display: none;
 }
 #functionsAdd {
   border: 1px solid #999;
@@ -205,20 +260,24 @@ select:focus {
 
 #preIterate {
   position: fixed;
-  bottom: 32px;
+  bottom: 54px;
   right: 0px;
   padding: 4px 0 4px 0;
+  display: none;
 }
 #preIterateFunction {
-  width: 92px;
+  width: 143px;
 }
 #preIterateColor {
-  width: 92px;
-  margin-left: 9px;
+  width: 143px;
+  margin-left: 10px;
 }
+
 #preIterateRot {
-  width: 92px;
-  margin-left: 9px;
+  width: 298px;
+  position: fixed;
+  bottom: 32px;
+  right: 0px;
 }
 
 #iterateButton {
