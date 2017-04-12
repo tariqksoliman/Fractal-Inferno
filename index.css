@@ -117,9 +117,12 @@ html, body {
   padding: 4px;
   cursor: pointer;
   transition: all 0.2s;
+  color: #666;
+  transition: all 0.2s;
 }
 .rfunction.active {
-  background-color: #444;
+  background: linear-gradient( to right, transparent, #333, transparent );
+  color: #E6E6E6;
 }
 
 
