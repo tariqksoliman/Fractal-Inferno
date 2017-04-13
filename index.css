@@ -128,7 +128,7 @@ html, body {
 
 #functions {
     width: 300px;
-    height: calc( 100vh - 32px - 32px );
+    height: calc( 100vh - 82px - 32px );
     position: fixed;
     top: 30px;
     right: 0px;
