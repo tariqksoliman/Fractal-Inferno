@@ -331,8 +331,8 @@ var FractalInferno = function() {
                 col = [ Math.random(), Math.random(), Math.random() ];
 
                 //c
-                var cofMult = 2 * Math.PI;
-                var cofSub = Math.PI;
+                var cofMult = 3;
+                var cofSub = 1.5;
                 for( var j = 0; j < 6; j++ ) {
                     var cof = Math.random() * cofMult - cofSub;
                     c.push( cof );
