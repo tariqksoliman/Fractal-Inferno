@@ -291,7 +291,7 @@ var FractalInferno = function() {
         else { //Randomize
             funcsJSON.shift(); //remove first element
 
-            var numOfFuncs = Math.max( Math.floor( Math.random() * 10 ), 3 );
+            var numOfFuncs = Math.max( Math.floor( Math.random() * 17 ), 3 );
 
             for( var i = 0; i < numOfFuncs; i++ ) {
                 var v = []; //array of ascending varis indicies
