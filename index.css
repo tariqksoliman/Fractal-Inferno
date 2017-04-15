@@ -17,17 +17,16 @@ html, body {
   position: fixed;
   top: 0;
   left: 0;
-  width: 288px;
+  width: 292px;
   text-align: center;
   font-family: upheaval;
   padding: 4px;
   font-size: 30px;
-  border: 2px solid #999;
 }
 
 #renderingbar {
   position: fixed;
-  top: 41px;
+  top: 32px;
   left: 0;
   width: 300px;
   font-family: monospace;
@@ -36,20 +35,25 @@ html, body {
 
 #helptoggle {
   position: fixed;
-  top: 55px;
+  top: 45px;
   left: 0px;
   width: 300px;
   font-size: 20px;
   cursor: pointer;
   text-align: right;
+  color: #666;
+  transition: all 0.2s;
+}
+#helptoggle:hover {
+  color: #E6E6E6;
 }
 #help {
   display: none;
   position: fixed;
-  top: 80px;
+  top: 65px;
   left: 0px;
   width: 300px;
-  height: calc( 100vh - 80px - 90px );
+  height: calc( 100vh - 65px - 90px );
   overflow-x: hidden;
   overflow-y: auto;
   font-family: monospace;
@@ -63,10 +67,7 @@ html, body {
 }
 
 #canvas { 
-  height: 100vh; 
-  width: 100vh; 
-  display: block;
-  margin: auto;
+  position: absolute;
 }
 
 #randomDiv {
@@ -80,9 +81,10 @@ html, body {
   padding: 4px;
   cursor: pointer;
   transition: all 0.2s;
+  color: #666;
 }
 #randomDiv.active {
-  background-color: #666;
+  color: #E6E6E6;
 }
 #customDiv {
   position: fixed;
@@ -95,9 +97,10 @@ html, body {
   padding: 4px;
   cursor: pointer;
   transition: all 0.2s;
+  color: #666
 }
 #customDiv.active {
-  background-color: #666;
+  color: #E6E6E6; 
 }
 
 #rfunctionsDiv {
@@ -105,11 +108,11 @@ html, body {
   font-size: 16px;
   position: fixed;
   right: 0;
-  top: 32px;
+  top: 34px;
   width: 300px;
   overflow-y: auto;
   overflow-x: hidden;
-  height: calc( 100vh - 62px - 32px );
+  height: calc( 100vh - 84px - 34px );
   text-align: center;
 }
 
@@ -121,16 +124,20 @@ html, body {
   transition: all 0.2s;
 }
 .rfunction.active {
-  background: linear-gradient( to right, transparent, #333, transparent );
   color: #E6E6E6;
+  text-shadow:
+    -1px -1px 1px #666,
+    1px -1px 1px #666,
+    -1px 1px 1px #666,
+    1px 1px 1px #666;  
 }
 
 
 #functions {
     width: 300px;
-    height: calc( 100vh - 82px - 32px );
+    height: calc( 100vh - 106px - 34px );
     position: fixed;
-    top: 30px;
+    top: 32px;
     right: 0px;
     overflow-y: auto;
     overflow-x: hidden;
@@ -144,8 +151,8 @@ html, body {
   font-family: monospace;
 }
 .functionHeader {
-  border-top: 3px solid cyan;
-  border-left: 1px solid cyan;
+  border-top: 3px solid #999;
+  border-left: 1px solid #999;
   font-size: 20px;
   padding: 3px 3px 3px 10px;
 }
@@ -251,6 +258,7 @@ select:focus {
 
 .scrollbar::-webkit-scrollbar {
   width: 0px;
+  height: 0px;
 }
  
 .scrollbar::-webkit-scrollbar-track {
@@ -263,7 +271,7 @@ select:focus {
 
 #preIterate {
   position: fixed;
-  bottom: 54px;
+  bottom: 78px;
   right: 0px;
   padding: 4px 0 4px 0;
   display: none;
@@ -276,11 +284,64 @@ select:focus {
   margin-left: 10px;
 }
 
-#preIterateRot {
-  width: 298px;
+#beforeNew {
   position: fixed;
-  bottom: 32px;
   right: 0px;
+  bottom: 32px;
+  width: 300px;
+}
+#beforeNewCanvW {
+  width: 90px
+}
+#beforeNewCanvH {
+  width: 90px;
+  margin-left: 12px;
+}
+#beforeNewZoom {
+    width: 90px;
+    margin-left: 12px;
+}
+#beforeNewRot {
+  margin-top: 4px;
+  width: 90px;
+}
+#beforeNewMirrorX {
+  font-family: monospace;
+  text-align: center;
+  display: inline-block;
+  margin-top: 4px;
+  width: 90px;
+  margin-left: 12px;
+  cursor: pointer;
+  color: #666;
+  transition: all 0.2s;
+}
+#beforeNewMirrorX.active {
+  color: #E6E6E6;
+  text-shadow:
+    -1px -1px 1px #666,
+    1px -1px 1px #666,
+    -1px 1px 1px #666,
+    1px 1px 1px #666;  
+}
+#beforeNewMirrorY {
+  font-family: monospace;
+  text-align: center;
+  display: inline-block;
+  margin-top: 4px;
+  width: 90px;
+  margin-left: 12px;
+  cursor: pointer;
+  color: #666;
+  transition: all 0.2s;
+}
+#beforeNewMirrorY.active {
+  color: #E6E6E6;
+  text-shadow:
+    -1px -1px 1px #666,
+    1px -1px 1px #666,
+    -1px 1px 1px #666,
+    1px 1px 1px #666;  
 }
 
 #iterateButton {
@@ -295,9 +356,11 @@ select:focus {
   cursor: pointer;
   transition: all 0.2s;
   background-color: transparent;
+  color: #666;
+  transition: all 0.2s;
 }
 #iterateButton:hover {
-  background-color: #666;
+  color: #E6E6E6;
 }
 
 
@@ -342,9 +405,10 @@ select:focus {
   padding: 4px;
   cursor: pointer;
   transition: all 0.2s;
+  color: #666;
 }
 #renderButton:hover {
-  background-color: #666;
+ color: #E6E6E6;
 }
 
 #continueButton {
@@ -358,7 +422,8 @@ select:focus {
   padding: 4px;
   cursor: pointer;
   transition: all 0.2s;
+  color: #666;
 }
 #continueButton:hover {
-  background-color: #666;
+  color: #E6E6E6;
 }

@@ -3,10 +3,11 @@ var FractalInferno = function() {
     var fractalinferno = {
         varisNames: [ 'Linear', 'Sinusoidal', 'Spherical', 'Swirl', 'Horseshoe', 'Polar',
                      'Hankerchief', 'Heart', 'Disc', 'Spiral', 'Hyperbolic', 'Diamond', 'Ex',
-                     'Julia', 'Bent', 'Waves', 'Fisheye', 'Popcorn', 'Power', 'Rings', 'Fan',
+                     'Julia', 'JuliaN', 'Bent', 'Waves', 'Fisheye', 'Popcorn', 'Power', 'Rings', 'Fan',
                      'Eyefish', 'Bubble', 'Cylinder', 'Tangent', 'Cross', 'Noise', 'Blur', 'Square' ],
-        makeFuncs: makeFuncs,
-        makeParams: makeParams,
+        setFuncs: setFuncs,
+        getFuncs: getFuncs,
+        setParams: setParams,
         begin: begin,
         start: start,
         stop: stop,
@@ -124,8 +125,22 @@ var FractalInferno = function() {
             f: function( x, y ) {
                 var rs = Math.sqrt( Math.sqrt( Math.pow( x, 2 ) + Math.pow( y, 2 ) ) );
                 var th = Math.atan2( y, x );
-                var om = funcs[cfi].c[0];
+                var om = funcs[cfi].r || ( funcs[cfi].c[0] + funcs[cfi].c[1] + funcs[cfi].c[2] + funcs[cfi].c[3] + funcs[cfi].c[4] + funcs[cfi].c[5] );
                 return [ rs * Math.cos( th / 2 + om ), rs * Math.sin( th / 2 + om ) ];
+            }
+        },
+        {   
+            name: 'JuliaN',
+            f: function( x, y ) {
+                var r = Math.sqrt( Math.pow( x, 2 ) + Math.pow( y, 2 ) );
+                var ph = Math.atan2( x, y );
+                var p1 = 1;
+                var p2 = 0.75;
+                var rnd = funcs[cfi].r || 0.5;
+                var p3 = Math.trunc( Math.abs( p1 ) * rnd );
+                var t = ( ph + ( 2 * Math.PI * p3 ) ) / p1;
+                var rpp = Math.pow( r, p2/p1 );
+                return [ rpp * Math.cos( t ), rpp * Math.sin( t ) ];
             }
         },
         {   
@@ -271,7 +286,7 @@ var FractalInferno = function() {
         return [ xnew, ynew ];
     }
 
-    function makeFuncs( funcsJSON ) {
+    function setFuncs( funcsJSON ) {
         funcs = [];
         weights = [];
         if( funcsJSON && funcsJSON[0] && funcsJSON[0] == 'custom' ) {
@@ -291,14 +306,15 @@ var FractalInferno = function() {
         else { //Randomize
             funcsJSON.shift(); //remove first element
 
-            var numOfFuncs = Math.max( Math.floor( Math.random() * 17 ), 3 );
+            //2 to 6
+            var numOfFuncs = Math.max( Math.floor( Math.random() * 7 ), 2 );
 
             for( var i = 0; i < numOfFuncs; i++ ) {
                 var v = []; //array of ascending varis indicies
                 var w = []; //array of non-negative nums summing to 1 with same length as v
                 var col = []; //rgb triplet each 0 to 1
                 var c = []; //array of 6 coefficients
-
+                var r; //Some random 0 to 1 var for possible use in variations
                 //v
                 //Pick random varis indicies and add them to v if they aren't already there
                 var maxNumOfVarisPerFunc = Math.round( Math.random() * 4 ) + 3;
@@ -338,8 +354,11 @@ var FractalInferno = function() {
                     c.push( cof );
                 }
 
+                //r
+                r = Math.random();
+
                 //Add the new func parameters
-                funcs.push( { v:v, w:w, col:col, c:c } );
+                funcs.push( { v:v, w:w, col:col, c:c, r:r } );
             }
 
             //Random weights for each function
@@ -354,36 +373,73 @@ var FractalInferno = function() {
                 totalSum += weightInc;
                 weightInc /= 2;
             }
+            //match weights with funcs
+            for( var i = 0; i < funcs.length; i++ ) {
+                funcs[i].weight = weights[i];
+            }
         }
+    }
+
+    function getFuncs() {
+        return funcs;
     }
 
     var final;
     var cfinal;
+    var canvasWidth;
+    var canvasHeight;
+    var zoom;
     var rot;
 
+    var canvas;
+    var ctx;
+    var imgdata;
+
+    var freqHistogram;
+    var colHistogram;
+
+    var mirrorX;
+    var mirrorY;
+
+    //Supersampling factor
+    var histoScale = 3;
+
     //Sets final func, final color and rotation
-    function makeParams( params ) {
+    function setParams( params ) {
         //-1 for none
         //1 for no rot
         final = params.final || Math.floor( Math.random() * ( funcs.length + 1 ) ) - 1;
         cfinal = params.cfinal || Math.floor( Math.random() * ( funcs.length + 1 ) ) - 1;
+
+        canvas = document.getElementById( 'canvas' );
+        canvasWidth = canvas.width = params.canvasW || window.innerWidth;
+        canvasHeight = canvas.height = params.canvasH || window.innerHeight;
+        canvas.style.width = canvasWidth + 'px';
+        canvas.style.height = canvasHeight + 'px';
+
+        //and center it in page
+        var left = ( window.innerWidth / 2 ) - ( canvasWidth / 2 );
+        var top = ( window.innerHeight / 2 ) - ( canvasHeight / 2 );
+        if( left < 0 ) left = 0;
+        if( top < 0 ) top = 0;
+        canvas.style.left = left + 'px';
+        canvas.style.top = top + 'px';
+        window.scrollTo( (left == 0) ? ( canvasWidth / 2 ) - ( window.innerWidth / 2 ) : 0, (top == 0) ? ( canvasHeight / 2 ) - ( window.innerHeight / 2 ) : 0 );
+
+        ctx = canvas.getContext( '2d' );
+        ctx.imageSmoothingEnabled = false;
+        freqHistogram = new Uint32Array( canvasWidth * canvasHeight * Math.pow( histoScale, 2 ) );
+        colHistogram = new Uint8Array( canvasWidth * canvasHeight * Math.pow( histoScale, 2 ) * 3 );
+
+        zoom = params.zoom || 1;
+
         rot = params.rot || Math.floor( Math.random() * 20 ) + 1;
+
+        mirrorX = params.mirrorX || false;
+        mirrorY = params.mirrorY || false;
     }
 
-
-    var canvas = document.getElementById( 'canvas' );
-    var canvasWidth = canvas.width = window.innerWidth;
-    var canvasHeight = canvas.height = window.innerHeight;
-    canvasWidth = canvas.width = canvasHeight;
-    var ctx = canvas.getContext( '2d' );
-    ctx.imageSmoothingEnabled = false;
-    var imgData;
-
     var animFrameId;
-
-    var histoScale = 3;
-    var freqHistogram = new Uint32Array( Math.pow( canvasWidth, 2 ) * Math.pow( histoScale, 2 ) );
-    var colHistogram = new Uint8Array( Math.pow( canvasWidth, 2 ) * Math.pow( histoScale, 2 ) * 3 );
 
     var stepCount = 0;
     var frameStep = 5000;
@@ -435,38 +491,49 @@ var FractalInferno = function() {
                     if( final != -1 ) {
                         p = runFunc( final, p[0], p[1] );
                     }
-                    //Stretch to fit canvas and histograms
-                    ph = [ Math.round( ( p[0] + 2 ) * ( canvasWidth * histoScale / 4 ) ), Math.round( ( p[1] + 2 ) * ( canvasHeight * histoScale / 4 ) ) ];
-                    pn = [ Math.round( ( p[0] + 2 ) * ( canvasWidth / 4 ) ), Math.round( ( p[1] + 2 ) * ( canvasHeight / 4 ) ) ];
 
-                    //Rotate for symmetry
-                    //Ugly - clean this up
-                    /*
-                    if( rot == 1 ) {
-                        if( i%2 == 0 ) {
-                            ph = rotatePoint( ph, Math.PI, canvasWidth * histoScale / 2, canvasHeight * histoScale / 2 );
-                            pn = rotatePoint( pn, Math.PI, canvasWidth / 2, canvasHeight / 2 );
+                    //saved point so we can change it without altering original
+                    pS = [ p[0], p[1] ];
+
+                    //zooming
+                    pS[0] *= zoom;
+                    pS[1] *= zoom;
+
+                    //mirroring
+                    if( mirrorX && !mirrorY ) {
+                        if( i % 2 == 0 ){
+                            pS[1] *= -1;
                         }
                     }
-                    else if( rot == 2 ) {
-                        if( i%3 == 0 ) {
-                            ph = rotatePoint( ph, 2 * Math.PI / 3, canvasWidth * histoScale / 2, canvasHeight * histoScale / 2 );
-                            pn = rotatePoint( pn, 2 * Math.PI / 3, canvasWidth / 2, canvasHeight / 2 );
+                    else if( mirrorY && !mirrorX ) {
+                        if( i % 2 == 0 ) {
+                            pS[0] *= -1;
                         }
-                        else if( i%2 == 0 ) {
-                            ph = rotatePoint( ph, 4 * Math.PI / 3, canvasWidth * histoScale / 2, canvasHeight * histoScale / 2 );
-                            pn = rotatePoint( pn, 4 * Math.PI / 3, canvasWidth / 2, canvasHeight / 2 );
+                    }
+                    else if( mirrorX && mirrorY ) {
+                        if( i % 4 == 0 ) {
+                            pS[0] *= -1;
                         }
-                    }*/
+                        else if( i % 3 == 0 ) {
+                            pS[0] *= -1;
+                            pS[1] *= -1;
+                        }
+                        else if( i % 2 == 0 ) {
+                            pS[1] *= -1;
+                        }
+                    }
+                    
+                    //Stretch to fit canvas and histograms
+                    ph = [ Math.round( ( pS[0] + 2 * (canvasWidth/canvasHeight) ) * ( canvasHeight * histoScale / 4 ) ), Math.round( ( pS[1] + 2 ) * ( canvasHeight * histoScale / 4 ) ) ];
+                    pn = [ Math.round( ( pS[0] + 2 * (canvasWidth/canvasHeight) ) * ( canvasHeight / 4 ) ), Math.round( ( pS[1] + 2 ) * ( canvasHeight / 4 ) ) ];
 
                     //Rotate
-                    if( rot > 0 ) {
+                    if( rot > 1 ) {
                         ph = rotatePoint( ph, currentRot, canvasWidth * histoScale / 2, canvasHeight * histoScale / 2 );
                         pn = rotatePoint( pn, currentRot, canvasWidth / 2, canvasHeight / 2 );
                         currentRot = ( currentRot + ( 2 * Math.PI / rot ) ) % ( 2 * Math.PI );
                     }
                     
-
                     //Update colors
                     c[0] = ( ( c[0] + funcs[w].col[0] ) / 2 );
                     c[1] = ( ( c[1] + funcs[w].col[1] ) / 2 );
@@ -530,21 +597,34 @@ var FractalInferno = function() {
         var avgCol;
         var alpha;
 
-        for( var x = 0; x < canvasWidth; x++ ) {
-            for( var y = 0; y < canvasWidth; y++ ) {
-                avgFreq = averageFreqForCell( x, y );
-                avgCol = averageColorForCell( x, y );
-                avgCol = makeVibrant( avgCol, hueShift, satShift, lightShift );
-                
-                alpha = Math.log10( avgFreq ) / Math.log10( maxFreq );
-                imgData.data[ (y * canvasWidth * 4) + (x * 4) + 0 ] = avgCol[0] * Math.pow( alpha, 1/gamma );
-                imgData.data[ (y * canvasWidth * 4) + (x * 4) + 1 ] = avgCol[1] * Math.pow( alpha, 1/gamma );
-                imgData.data[ (y * canvasWidth * 4) + (x * 4) + 2 ] = avgCol[2] * Math.pow( alpha, 1/gamma );
-                imgData.data[ (y * canvasWidth * 4) + (x * 4) + 3 ] = alpha * 255;
+        var x = 0;
+
+        renderLine();
+        function renderLine( ) {
+            for( var c = 0; c < 100 && x < canvasWidth; c++ ) {
+                for( var y = 0; y < canvasWidth; y++ ) {
+                    avgFreq = averageFreqForCell( x, y );
+                    avgCol = averageColorForCell( x, y );
+                    avgCol = makeVibrant( avgCol, hueShift, satShift, lightShift );
+                    
+                    alpha = Math.log10( avgFreq ) / Math.log10( maxFreq );
+                    imgData.data[ (y * canvasWidth * 4) + (x * 4) + 0 ] = avgCol[0] * Math.pow( alpha, 1/gamma );
+                    imgData.data[ (y * canvasWidth * 4) + (x * 4) + 1 ] = avgCol[1] * Math.pow( alpha, 1/gamma );
+                    imgData.data[ (y * canvasWidth * 4) + (x * 4) + 2 ] = avgCol[2] * Math.pow( alpha, 1/gamma );
+                    imgData.data[ (y * canvasWidth * 4) + (x * 4) + 3 ] = alpha * 255;
+                }       
+                x++;
+            }
+            //x increments at end so we don't need x + 1 to fill out percentage
+            renderBar.innerText = 'Rendering ' + Math.floor( x / canvasWidth * 100 ) + '%';
+            if( x < canvasWidth ) {
+                setTimeout( renderLine, 1 );
+            }
+            else {         
+                ctx.putImageData( imgData, 0, 0 );
+                renderBar.innerText = 'Rendered with ' + stepCount.toExponential( 4 ) + ' points';
             }
         }
-
-        ctx.putImageData( imgData, 0, 0 );
     }
 
     function findMaxFreq() {
@@ -601,7 +681,7 @@ var FractalInferno = function() {
         return ( (n % m) + m ) % m;
     }
 
-    //Vibrancy
+    //Vibrancy / HSL shifts
     //Converts RGB to HSL, Maximizes S and L, then converts back to rgb
     function makeVibrant( rgbArr, hueShift, satShift, lightShift ) {
         var hsl = rgb2hsl( rgbArr );
@@ -610,7 +690,7 @@ var FractalInferno = function() {
         hsl[2] = ( hsl[2] + ( Math.max( lightShift, 0 ) * 100 ) ) / ( Math.abs( lightShift ) + 1);
         return hsl2rgb( hsl[0]/360, hsl[1]/100, hsl[2]/100 );
     }
-    function rgb2hsl(rgbArr){
+    function rgb2hsl( rgbArr ) {
         var r1 = rgbArr[0] / 255;
         var g1 = rgbArr[1] / 255;
         var b1 = rgbArr[2] / 255;

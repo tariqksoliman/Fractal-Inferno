@@ -63,11 +63,11 @@ function UserInterface( fractalinferno ) {
     $( '#functions' ).append( functionsAddDiv );
 
     functionsAddDiv.on( 'click', function() {
-        addFunction();
+        addFunction( true );
         $( '#functions' ).append( functionsAddDiv );
     } );
 
-    function addFunction() {
+    function addFunction( firstVaris ) {
         var functionDiv = $( '<div/>' )
             .attr( 'class', 'function' );
         $( '#functions' ).append( functionDiv );
@@ -120,12 +120,13 @@ function UserInterface( fractalinferno ) {
         functionAddVarisDiv.on( 'click', (function(f,fAV) {
             return function() {
                 addVarianceToFunction( f );
-                f.append( fAV );
-                $( '#functions' ).append( $( '#functionsAdd' ) );
             }
         })(functionDiv,functionAddVarisDiv) );
 
-        functionAddVarisDiv.click();
+        if( firstVaris )
+            functionAddVarisDiv.click();
+        
+        return functionDiv;
     }
 
     function addVarianceToFunction( functionDiv ) {
@@ -160,6 +161,12 @@ function UserInterface( fractalinferno ) {
                     opacity: '0'
                 }, 600, function() { $(this).remove(); } );
             } );
+
+        //Put adds back at end
+        functionDiv.append( functionDiv.find( '.functionAddVaris' ) );
+        $( '#functions' ).append( $( '#functionsAdd' ) );
+
+        return functionVarisDiv;
     }
 
 
@@ -203,18 +210,25 @@ function UserInterface( fractalinferno ) {
     function getFractalParams() {
         var final = parseInt( $( '#preIterateFunction' ).val() ) || -1;
         var cfinal = parseInt( $( '#preIterateColor' ).val() ) || -1;
-        var rot = parseFloat( $( '#preIterateRot' ).val() ) || 1;
+        var canvasW = parseFloat( $( '#beforeNewCanvW' ).val() );
+        var canvasH = parseFloat( $( '#beforeNewCanvH' ).val() );
+        var zoom = parseFloat( $( '#beforeNewZoom' ).val() ) || 1;
+        var rot = parseFloat( $( '#beforeNewRot' ).val() ) || 1;
+        var mirrorX = $( '#beforeNewMirrorX' ).hasClass( 'active' );
+        var mirrorY =$( '#beforeNewMirrorY' ).hasClass( 'active' );
         if( $( '#randomDiv' ).hasClass( 'active' ) ) {
-            return {
-                final: -1,
-                cfinal: -1,
-                rot: rot
-            }
+            final = -1;
+            cfinal = -1;
         }
         return {
             final: final,
             cfinal: cfinal,
-            rot: rot
+            canvasW: canvasW,
+            canvasH: canvasH,
+            zoom: zoom,
+            rot: rot,
+            mirrorX: mirrorX,
+            mirrorY: mirrorY
         }
     }
 
@@ -234,12 +248,52 @@ function UserInterface( fractalinferno ) {
             .attr( 'type', 'number' )
             .attr( 'placeholder', 'final color' );
         preIterateDiv.append( preIterateColor );
+    
+    var beforeNewDiv = $( '<div/>' )
+        .attr( 'id', 'beforeNew' );
+    $( 'body' ).append( beforeNewDiv );
 
-    var preIterateRot = $( '<input/>' )
-        .attr( 'id', 'preIterateRot' )
-        .attr( 'type', 'number' )
-        .attr( 'placeholder', 'rotation' );
-    $( 'body' ).append( preIterateRot );
+        var beforeNewCanvW = $( '<input/>' )
+            .attr( 'id', 'beforeNewCanvW' )
+            .attr( 'type', 'number' )
+            .attr( 'placeholder', 'width' );
+        beforeNewDiv.append( beforeNewCanvW );
+
+        var beforeNewCanvH = $( '<input/>' )
+            .attr( 'id', 'beforeNewCanvH' )
+            .attr( 'type', 'number' )
+            .attr( 'placeholder', 'height' );
+        beforeNewDiv.append( beforeNewCanvH );
+
+        var beforeNewZoom = $( '<input/>' )
+            .attr( 'id', 'beforeNewZoom' )
+            .attr( 'type', 'number' )
+            .attr( 'placeholder', 'zoom' );
+        beforeNewDiv.append( beforeNewZoom );
+
+        var beforeNewRot = $( '<input/>' )
+            .attr( 'id', 'beforeNewRot' )
+            .attr( 'type', 'number' )
+            .attr( 'placeholder', 'rotations' );
+        beforeNewDiv.append( beforeNewRot );
+
+        var beforeNewMirrorX = $( '<div/>' )
+            .attr( 'id', 'beforeNewMirrorX' )
+            .text( 'mirror x' );
+         beforeNewDiv.append( beforeNewMirrorX );
+            
+            beforeNewMirrorX.on( 'click', function() {
+                $(this).toggleClass( 'active' );
+            } );
+
+        var beforeNewMirrorY = $( '<div/>' )
+            .attr( 'id', 'beforeNewMirrorY' )
+            .text( 'mirror y' );
+        beforeNewDiv.append( beforeNewMirrorY );
+
+            beforeNewMirrorY.on( 'click', function() {
+                $(this).toggleClass( 'active' );
+            } );
 
 
     var iterateButton = $( '<div/>' )
@@ -248,8 +302,9 @@ function UserInterface( fractalinferno ) {
     $( 'body' ).append( iterateButton );
 
     iterateButton.on( 'click', function() {
-        fractalinferno.makeFuncs( getFractalJSON() );
-        fractalinferno.makeParams( getFractalParams() );
+        fractalinferno.setFuncs( getFractalJSON() );
+        setCustomFuncs( fractalinferno.getFuncs() );
+        fractalinferno.setParams( getFractalParams() );
         fractalinferno.begin();
     } );
 
@@ -323,5 +378,29 @@ function UserInterface( fractalinferno ) {
     continueButton.on( 'click', function() {
         fractalinferno.start();
     } );
+
+    function setCustomFuncs( funcs ) {
+        //Delete any previous functions first
+        $( '.function' ).remove();
+
+        for( var i = 0; i < funcs.length; i++ ) {
+            var newfunc = addFunction();
+            newfunc.find( '.functionWeight' ).val( funcs[i].weight );
+            newfunc.find( '.functionColor' ).val( funcs[i].col[0].toFixed(2) + ','
+                                                + funcs[i].col[1].toFixed(2) + ','
+                                                + funcs[i].col[2].toFixed(2) );
+            newfunc.find( '.functionCofs' ).val(  funcs[i].c[0].toFixed(3) + ','
+                                                + funcs[i].c[1].toFixed(3) + ','
+                                                + funcs[i].c[2].toFixed(3) + ','
+                                                + funcs[i].c[3].toFixed(3) + ','
+                                                + funcs[i].c[4].toFixed(3) + ','
+                                                + funcs[i].c[5].toFixed(3) );
+            for( var j = 0; j < funcs[i].v.length; j++ ) {
+                var newVaris = addVarianceToFunction( newfunc );
+                newVaris.find( '.functionVarisNames' ).val( fractalinferno.varisNames[ funcs[i].v[j] ] );
+                newVaris.find( '.functionVarisWeight' ).val( funcs[i].w[j].toFixed(3) );
+            }
+        }
+    }
     
 }
