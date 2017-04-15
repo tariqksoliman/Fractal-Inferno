@@ -7,9 +7,7 @@ An online fractal flame editor as detailed in the [flam3 paper](http://flam3.com
 ## What's Missing:
 * Some variance functions
 * Density Estimation
-* Options to change canvas size
-* Options to change canvas background
-* Non-square canvas
+* Options to change canvas background color
 
 ## Gallery
 ![Alt text](/resources/fractalinferno000.png?raw=true)

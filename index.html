@@ -5,8 +5,11 @@
         <link rel='stylesheet' type='text/css' href='index.css'>
         <script src='scripts/jquery-3.2.0.min.js'></script>
     </head>
-    <body>
+    <body class='scrollbar'>
         <div id='title'>Fractal Inferno</div>
+
+        <canvas id='canvas'></canvas>
+
         <div id='renderingbar'></div>
         <div id='helptoggle'>Help</div>
         <div id='help' class='scrollbar'>
@@ -16,6 +19,7 @@
             <p style='text-align: center; margin-bottom: 2px;'>Wait</p>
             <p style='text-align: center; font-size: 10px; margin-top: 0px;'>(if nothing shows up after a few seconds, click <b>New</b> again)</p>
             <p style='text-align: center;'>Click <b>RENDER</b></p>
+            <p style='text-align: center;'>Right-Click 'Save image as' to save</b></p>
             <h2>In-Depth</h2>
             <p>A fractal is a mathematical set that exhibits a repeating pattern at every scale. There are several ways of drawing a fractal. 
             One of them is by playing the Chaos Game. The Chaos Game is played as follows:
@@ -49,7 +53,7 @@
             <h3>Top Right Corner</h3>
                 <p>Random</p>
                     <p class='indented1'>
-                    Choose a set of functions to randomly generate a fractal from.
+                    Choose a set of functions to randomly generate a fractal from. Updates Custom with those functions upon hitting New.
                     </p>
                 <p>Custom</p>
                 <p class='indented1'>+</p>
@@ -82,9 +86,29 @@
                     <p class='indented2'>
                     Like final func but takes the functions color instead.
                     </p>
+                <p class='indented1'>width</p>
+                    <p class='indented2'>
+                        Change the canvas' width. Default window width.
+                    </p>
+                <p class='indented1'>height</p>
+                    <p class='indented2'>
+                        Change the canvas' Height. Default window height.
+                    </p>
+                <p class='indented1'>zoom</p>
+                    <p class='indented2'>
+                        Zoom in to the center of the fractal.
+                    </p>
                 <p class='indented1'>rotation</p>
                     <p class='indented2'>
                     How many times you want the fractal rotated about the center.
+                    </p>
+                <p class='indented1'>mirror x</p>
+                    <p class='indented2'>
+                    Toggle on and off mirroring the fractal across the x-axis.
+                    </p>
+                <p class='indented1'>mirror y</p>
+                    <p class='indented2'>
+                    Toggle on and off mirroring the fractal across the y-axis.
                     </p>
                 <p class='indented1'>NEW</p>
                     <p class='indented2'>
@@ -127,8 +151,6 @@
             </p>
             <p style='text-align: center;'>Tariq Soliman</p>
         </div>
-
-        <canvas id='canvas'></canvas>
     </body>
     <footer>
         <script src='scripts/FractalInferno.js'></script>
