@@ -303,6 +303,8 @@ function UserInterface( fractalinferno ) {
         rightpanel.append( iterateButton );
 
         iterateButton.on( 'click', function() {
+            document.getElementById('tutorial').style.display = 'none'
+            document.getElementById('iterateButton').style.color = '#666'
             fractalinferno.setFuncs( getFractalJSON() );
             setCustomFuncs( fractalinferno.getFuncs() );
             fractalinferno.setParams( getFractalParams() );
@@ -411,7 +413,6 @@ function UserInterface( fractalinferno ) {
     //Fade panels if mouse still long enough
     $( 'body' ).mousemove( function() {
         $( '#rightpanel, #leftpanel' ).stop().animate( {opacity: 1}, 200, function() {
-            console.log( 'here' );
             setTimeout( function() {
                     $( '#rightpanel, #leftpanel' ).stop().animate( {
                         opacity: 0
