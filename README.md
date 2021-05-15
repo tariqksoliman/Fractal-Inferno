@@ -11,6 +11,7 @@ An online fractal flame editor as detailed in the [flam3 paper](http://flam3.com
 
 ## Gallery
 ![Alt text](/resources/fractalinferno000.png?raw=true)
+![Alt text](/resources/fractalinferno005.png?raw=true)
 ![Alt text](/resources/fractalinferno001.png?raw=true)
 ![Alt text](/resources/fractalinferno002.png?raw=true)
 ![Alt text](/resources/fractalinferno003.png?raw=true)
