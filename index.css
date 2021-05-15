@@ -40,7 +40,7 @@ html, body {
   width: 300px;
   font-size: 20px;
   cursor: pointer;
-  text-align: right;
+  text-align: center;
   color: #666;
   transition: all 0.2s;
 }
@@ -306,29 +306,30 @@ select:focus {
   right: 0px;
   bottom: 32px;
   width: 300px;
+  text-align: center;
 }
 #beforeNewCanvW {
-  width: 90px
+  width: 80px
 }
 #beforeNewCanvH {
-  width: 90px;
+  width: 80px;
   margin-left: 12px;
 }
 #beforeNewZoom {
-    width: 90px;
+    width: 80px;
     margin-left: 12px;
 }
 #beforeNewRot {
   margin-top: 4px;
-  width: 90px;
+  width: 80px;
 }
 #beforeNewMirrorX {
   font-family: monospace;
   text-align: center;
   display: inline-block;
   margin-top: 4px;
-  width: 90px;
   margin-left: 12px;
+  width: 86px;
   cursor: pointer;
   color: #666;
   transition: all 0.2s;
@@ -346,7 +347,7 @@ select:focus {
   text-align: center;
   display: inline-block;
   margin-top: 4px;
-  width: 90px;
+  width: 86px;
   margin-left: 12px;
   cursor: pointer;
   color: #666;
@@ -373,7 +374,7 @@ select:focus {
   cursor: pointer;
   transition: all 0.2s;
   background-color: transparent;
-  color: #666;
+  color: chartreuse;
   transition: all 0.2s;
 }
 #iterateButton:hover {
@@ -392,21 +393,23 @@ select:focus {
   margin-top: 4px;
 }
 #renderHueShift {
-  width: 90px;
+  width: 80px;
+  margin-left: 12px;
 }
 #renderSatShift {
-  width: 90px;
+  width: 80px;
   margin-left: 12px;
 }
 #renderLightShift {
-  width: 90px;
+  width: 80px;
   margin-left: 12px;
 }
 #renderFreqThresh {
-  width: 142px;
+  width: 129px;
+  margin-left: 12px;
 }
 #renderGamma {
-  width: 142px;
+  width: 129px;
   margin-left: 12px;
 }
 
@@ -443,4 +446,15 @@ select:focus {
 }
 #continueButton:hover {
   color: #E6E6E6;
+}
+
+#tutorial {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  font-size: 26px;
+  text-align: center;
+  color: chartreuse;
+  border-bottom: 3px solid;
 }

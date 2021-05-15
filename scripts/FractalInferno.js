@@ -392,7 +392,7 @@ var FractalInferno = function() {
 
     var canvas;
     var ctx;
-    var imgdata;
+    var imgData;
 
     var freqHistogram;
     var colHistogram;
